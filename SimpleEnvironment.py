@@ -1,6 +1,7 @@
 import numpy
 import pylab as pl
 from DiscreteEnvironment import DiscreteEnvironment
+import math
 
 class SimpleEnvironment(object):
     
@@ -28,7 +29,51 @@ class SimpleEnvironment(object):
         #  up the configuration associated with the particular node_id
         #  and return a list of node_ids that represent the neighboring
         #  nodes
-        
+
+
+        # considering all edge cases
+        if node_id == 0 :
+            successors.append(node_id + 1)
+            successors.append(node_id + self.discrete_env.num_cells[0])
+
+        elif node_id == (self.discrete_env.num_cells[0] - 1):
+            successors.append(self.discrete_env.num_cells[0] -2)
+            successors.append(node_id + self.discrete_env.num_cells[0])
+
+        elif node_id / self.discrete_env.num_cells[0] == 0:
+            successors.append(node_id - 1)
+            successors.append(node_id + 1)
+            successors.append(node_id + self.discrete_env.num_cells[0])
+
+        elif (node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] - 1) && (node_id % self.discrete_env.num_cells[0] == 0):
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id + 1)
+
+        elif node_id / self.discrete_env.num_cells[0] == 0:
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id + 1)
+            successors.append(node_id + self.discrete_env.num_cells[0])
+
+        elif (node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] - 1) && (node_id % self.discrete_env.num_cells[0] = self.discrete_env.num_cells[0] -1):
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id - 1)
+
+        elif (node_id % self.discrete_env.num_cells[0]) == (self.discrete_env.num_cells[0] -1):
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id - 1)
+            successors.append(node_id + self.discrete_env.num_cells[0])
+
+        elif node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] -1:
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id - 1)
+            successors.append(node_id + 1)
+
+        else:
+            successors.append(node_id - self.discrete_env.num_cells[0])
+            successors.append(node_id + self.discrete_env.num_cells[0])
+            successors.append(node_id - 1)
+            successors.append(node_id + 1)
+
         return successors
 
     def ComputeDistance(self, start_id, end_id):
@@ -39,6 +84,14 @@ class SimpleEnvironment(object):
         # computes the distance between the configurations given
         # by the two node ids
 
+        start_x,start_y = self.discrete_env.NodeIdToGridCoord(start_id) 
+        end_x, end_y    = self.discrete_env.NodeIdToGridCoord(end_id)
+        
+        dist_x = math.pow( start_x - end_x , 2 )
+        dist_y = math.pow( start_y - end_y , 2 )
+
+        dist = math.sqrt( dist_x + dist_y )
+
         return dist
 
     def ComputeHeuristicCost(self, start_id, goal_id):
@@ -48,6 +101,7 @@ class SimpleEnvironment(object):
         # TODO: Here you will implement a function that 
         # computes the heuristic cost between the configurations
         # given by the two node ids
+        cost = self.ComputeDistance(start_id,goal_id)
 
         return cost
 
