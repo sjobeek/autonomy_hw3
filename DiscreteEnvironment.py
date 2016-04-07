@@ -46,9 +46,10 @@ class DiscreteEnvironment(object):
         # This function maps a configuration in the full configuration space
         # to a grid coordinate in discrete space
         #
+
         coord = [0] * self.dimension
         for idx in range(self.dimension):
-            coord[idx] = numpy.ceil(config[idx])
+            coord[idx] = int(numpy.floor((config[idx] - self.lower_limits[idx]) / self.resolution ))
             
         print ("the given continuous config is ", config)
         print("the new discrete coords is", coord)
@@ -63,7 +64,8 @@ class DiscreteEnvironment(object):
         #
         config = [0] * self.dimension
         for idx in range(self.dimension):
-                config[idx] = coord[idx]*self.resolution + self.resolution/2;
+          config[idx] = float(self.lower_limits[idx] + coord[idx] * self.resolution + self.resolution/2.0)
+    
         print ("coordinates are--->",coord)
         print("configuration---->", config)        
         return config
@@ -87,8 +89,8 @@ class DiscreteEnvironment(object):
         
 def main():
         print("in main")
-        o = DiscreteEnvironment(4,[0,0],[4,4])     
-        o.ConfigurationToGridCoord([1.2,4.6])
+        o = DiscreteEnvironment(0.5,[0,0],[4,4])     
+        o.ConfigurationToGridCoord([1.2,3.6])
         o.GridCoordToConfiguration([1,3])
 if __name__ == '__main__':  
         main()  
