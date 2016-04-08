@@ -39,19 +39,19 @@ class SimpleEnvironment(object):
         #            1
         
         if node_id % self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[0] -1) :
-            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id + 1)):
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id + 1)):
                 successors.append(node_id + 1)
 
-        if node_id / self.discrete_env.num_cells[0] != 0:
-            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id - self.discrete_env.num_cells[0])):
+        if int(node_id / self.discrete_env.num_cells[0]) != 0:
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id - self.discrete_env.num_cells[0])):
                 successors.append(node_id - self.discrete_env.num_cells[0])
 
         if node_id % self.discrete_env.num_cells[0] != 0:
-            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id - 1)):
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id - 1)):
                 successors.append(node_id - 1)
 
-        if node_id / self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[1] -1):
-            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id + self.discrete_env.num_cells[0])):
+        if int(node_id / self.discrete_env.num_cells[0]) != (self.discrete_env.num_cells[1] -1):
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id + self.discrete_env.num_cells[0])):
                 successors.append(node_id + self.discrete_env.num_cells[0])
 
         return successors
@@ -64,8 +64,8 @@ class SimpleEnvironment(object):
         # computes the distance between the configurations given
         # by the two node ids
 
-        start_x,start_y = self.discrete_env.NodeIdToGridCoord(start_id) 
-        end_x, end_y    = self.discrete_env.NodeIdToGridCoord(end_id)
+        start_x,start_y = self.discrete_env.NodeIdToConfiguration(start_id) 
+        end_x, end_y    = self.discrete_env.NodeIdToConfiguration(end_id)
         
         dist_x = math.pow( start_x - end_x , 2 )
         dist_y = math.pow( start_y - end_y , 2 )

@@ -55,8 +55,8 @@ class DiscreteEnvironment(object):
         for idx in range(self.dimension):
             coord[idx] = int(numpy.floor((config[idx] - self.lower_limits[idx]) / self.resolution ))
             
-        print ("the given continuous config is ", config)
-        print("the new discrete coords is", coord)
+        # print ("the given continuous config is ", config)
+        # print("the new discrete coords is", coord)
         return coord
 
     def GridCoordToConfiguration(self, coord):
@@ -69,8 +69,8 @@ class DiscreteEnvironment(object):
         for idx in range(self.dimension):
           config[idx] = float(self.lower_limits[idx] + coord[idx] * self.resolution + self.resolution/2.0)
     
-        print ("coordinates are--->",coord)
-        print("configuration---->", config)        
+        # print ("coordinates are--->",coord)
+        # print("configuration---->", config)        
         return config
 
     def GridCoordToNodeId(self,coord):
