@@ -1,10 +1,12 @@
 import numpy
 import pylab as pl
 from DiscreteEnvironment import DiscreteEnvironment
+import math
 
 class SimpleEnvironment(object):
     
     def __init__(self, herb, resolution):
+        global table
         self.robot = herb.robot
         self.lower_limits = [-5., -5.]
         self.upper_limits = [5., 5.]
@@ -28,7 +30,30 @@ class SimpleEnvironment(object):
         #  up the configuration associated with the particular node_id
         #  and return a list of node_ids that represent the neighboring
         #  nodes
+
+        # order of nodes: successors = [4,3,2,1]
+        #            3
+        #            |
+        #    2 --- node_id --- 4
+        #            |
+        #            1
         
+        if node_id % self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[0] -1) :
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id + 1)):
+                successors.append(node_id + 1)
+
+        if int(node_id / self.discrete_env.num_cells[0]) != 0:
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id - self.discrete_env.num_cells[0])):
+                successors.append(node_id - self.discrete_env.num_cells[0])
+
+        if node_id % self.discrete_env.num_cells[0] != 0:
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id - 1)):
+                successors.append(node_id - 1)
+
+        if int(node_id / self.discrete_env.num_cells[0]) != (self.discrete_env.num_cells[1] -1):
+            if not self.CheckCollision(self.discrete_env.NodeIdToConfiguration(node_id + self.discrete_env.num_cells[0])):
+                successors.append(node_id + self.discrete_env.num_cells[0])
+
         return successors
 
     def ComputeDistance(self, start_id, end_id):
@@ -39,6 +64,14 @@ class SimpleEnvironment(object):
         # computes the distance between the configurations given
         # by the two node ids
 
+        start_x,start_y = self.discrete_env.NodeIdToConfiguration(start_id) 
+        end_x, end_y    = self.discrete_env.NodeIdToConfiguration(end_id)
+        
+        dist_x = math.pow( start_x - end_x , 2 )
+        dist_y = math.pow( start_y - end_y , 2 )
+
+        dist = math.sqrt( dist_x + dist_y )
+
         return dist
 
     def ComputeHeuristicCost(self, start_id, goal_id):
@@ -48,8 +81,17 @@ class SimpleEnvironment(object):
         # TODO: Here you will implement a function that 
         # computes the heuristic cost between the configurations
         # given by the two node ids
+        cost = self.ComputeDistance(start_id,goal_id)
 
         return cost
+
+    def CheckCollision(self, config):
+        tempTrans = self.robot.GetTransform()
+        self.robot.SetTransform(numpy.array([[1, 0, 0, config[0]],
+                                             [0, 1, 0, config[1]],
+                                             [0, 0, 1,         0],
+                                             [0, 0, 0,         1]]))
+        return self.robot.GetEnv().CheckCollision(self.robot,table)
 
     def InitializePlot(self, goal_config):
         self.fig = pl.figure()
