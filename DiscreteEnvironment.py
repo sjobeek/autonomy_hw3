@@ -29,7 +29,7 @@ class DiscreteEnvironment(object):
         # space to a node in discrete space
         #
         grid_cord = self.ConfigurationToGridCoord(config)
-        node_id = GridCoordToNodeId(grid_cord)
+        node_id = self.GridCoordToNodeId(grid_cord)
         return node_id
     
 
@@ -57,7 +57,6 @@ class DiscreteEnvironment(object):
             
         print ("the given continuous config is ", config)
         print("the new discrete coords is", coord)
-        
         return coord
 
     def GridCoordToConfiguration(self, coord):
@@ -82,7 +81,7 @@ class DiscreteEnvironment(object):
         node_id = 0
         multip = 1
         for idx in range(self.dimension):
-            node_id += multip * config[idx]
+            node_id += multip * coord[idx]
             multip *= self.num_cells[idx]
 
         return node_id
@@ -103,16 +102,16 @@ class DiscreteEnvironment(object):
 
         coord = [0] * self.dimension
         for multip_idx in reversed(range(self.dimension)):
-            coord[multip_idx] = int(nid / multipliers[multip_idx])
-            nid %= multipliers[multip_idx]
+            coord[multip_idx] = int(node_id / multipliers[multip_idx])
+            node_id %= multipliers[multip_idx]
 
         return coord
         
         
-def main():
-        print("in main")
-        o = DiscreteEnvironment(0.5,[0,0],[4,4])     
-        o.ConfigurationToGridCoord([1.2,3.6])
-        o.GridCoordToConfiguration([1,3])
-if __name__ == '__main__':  
-        main()  
+# def main():
+#         print("in main")
+#         o = DiscreteEnvironment(0.5,[0,0],[4,4])     
+#         o.ConfigurationToGridCoord([1.2,3.6])
+#         o.GridCoordToConfiguration([1,3])
+# if __name__ == '__main__':  
+#         main()  

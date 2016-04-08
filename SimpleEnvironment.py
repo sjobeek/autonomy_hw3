@@ -6,6 +6,7 @@ import math
 class SimpleEnvironment(object):
     
     def __init__(self, herb, resolution):
+        global table
         self.robot = herb.robot
         self.lower_limits = [-5., -5.]
         self.upper_limits = [5., 5.]
@@ -38,19 +39,19 @@ class SimpleEnvironment(object):
         #            1
         
         if node_id % self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[0] -1) :
-            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id + 1)):
+            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id + 1)):
                 successors.append(node_id + 1)
 
         if node_id / self.discrete_env.num_cells[0] != 0:
-            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id - self.discrete_env.num_cells[0])):
+            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id - self.discrete_env.num_cells[0])):
                 successors.append(node_id - self.discrete_env.num_cells[0])
 
         if node_id % self.discrete_env.num_cells[0] != 0:
-            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id - 1):
+            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id - 1)):
                 successors.append(node_id - 1)
 
         if node_id / self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[1] -1):
-            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id + self.discrete_env.num_cells[0])):
+            if not self.CheckCollision(self.discrete_env.NodeIdToGridCoord(node_id + self.discrete_env.num_cells[0])):
                 successors.append(node_id + self.discrete_env.num_cells[0])
 
         return successors
@@ -86,10 +87,10 @@ class SimpleEnvironment(object):
 
     def CheckCollision(self, config):
         tempTrans = self.robot.GetTransform()
-        self.robot.SetTransform(numpy.array([1, 0, 0, config[0]],
-                                            [0, 1, 0, config[1]],
-                                            [0, 0, 1,         0],
-                                            [0, 0, 0,         1]]))
+        self.robot.SetTransform(numpy.array([[1, 0, 0, config[0]],
+                                             [0, 1, 0, config[1]],
+                                             [0, 0, 1,         0],
+                                             [0, 0, 0,         1]]))
         return self.robot.GetEnv().CheckCollision(self.robot,table)
 
     def InitializePlot(self, goal_config):
