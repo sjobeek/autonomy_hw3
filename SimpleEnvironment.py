@@ -30,49 +30,28 @@ class SimpleEnvironment(object):
         #  and return a list of node_ids that represent the neighboring
         #  nodes
 
+        # order of nodes: successors = [4,3,2,1]
+        #            3
+        #            |
+        #    2 --- node_id --- 4
+        #            |
+        #            1
+        
+        if node_id % self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[0] -1) :
+            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id + 1)):
+                successors.append(node_id + 1)
 
-        # considering all edge cases
-        if node_id == 0 :
-            successors.append(node_id + 1)
-            successors.append(node_id + self.discrete_env.num_cells[0])
+        if node_id / self.discrete_env.num_cells[0] != 0:
+            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id - self.discrete_env.num_cells[0])):
+                successors.append(node_id - self.discrete_env.num_cells[0])
 
-        elif node_id == (self.discrete_env.num_cells[0] - 1):
-            successors.append(self.discrete_env.num_cells[0] -2)
-            successors.append(node_id + self.discrete_env.num_cells[0])
+        if node_id % self.discrete_env.num_cells[0] != 0:
+            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id - 1):
+                successors.append(node_id - 1)
 
-        elif node_id / self.discrete_env.num_cells[0] == 0:
-            successors.append(node_id - 1)
-            successors.append(node_id + 1)
-            successors.append(node_id + self.discrete_env.num_cells[0])
-
-        elif (node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] - 1) && (node_id % self.discrete_env.num_cells[0] == 0):
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id + 1)
-
-        elif node_id / self.discrete_env.num_cells[0] == 0:
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id + 1)
-            successors.append(node_id + self.discrete_env.num_cells[0])
-
-        elif (node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] - 1) && (node_id % self.discrete_env.num_cells[0] = self.discrete_env.num_cells[0] -1):
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id - 1)
-
-        elif (node_id % self.discrete_env.num_cells[0]) == (self.discrete_env.num_cells[0] -1):
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id - 1)
-            successors.append(node_id + self.discrete_env.num_cells[0])
-
-        elif node_id / self.discrete_env.num_cells[0] == self.discrete_env.num_cells[1] -1:
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id - 1)
-            successors.append(node_id + 1)
-
-        else:
-            successors.append(node_id - self.discrete_env.num_cells[0])
-            successors.append(node_id + self.discrete_env.num_cells[0])
-            successors.append(node_id - 1)
-            successors.append(node_id + 1)
+        if node_id / self.discrete_env.num_cells[0] != (self.discrete_env.num_cells[1] -1):
+            if self.CheckCollision(DiscreteEnvironment.NodeIdToGridCoord(node_id + self.discrete_env.num_cells[0])):
+                successors.append(node_id + self.discrete_env.num_cells[0])
 
         return successors
 
@@ -104,6 +83,14 @@ class SimpleEnvironment(object):
         cost = self.ComputeDistance(start_id,goal_id)
 
         return cost
+
+    def CheckCollision(self, config):
+        tempTrans = self.robot.GetTransform()
+        self.robot.SetTransform(numpy.array([1, 0, 0, config[0]],
+                                            [0, 1, 0, config[1]],
+                                            [0, 0, 1,         0],
+                                            [0, 0, 0,         1]]))
+        return self.robot.GetEnv().CheckCollision(self.robot,table)
 
     def InitializePlot(self, goal_config):
         self.fig = pl.figure()
