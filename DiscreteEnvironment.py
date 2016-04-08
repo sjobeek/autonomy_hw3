@@ -54,9 +54,6 @@ class DiscreteEnvironment(object):
         coord = [0] * self.dimension
         for idx in range(self.dimension):
             coord[idx] = int(numpy.floor((config[idx] - self.lower_limits[idx]) / self.resolution ))
-            
-        # print ("the given continuous config is ", config)
-        # print("the new discrete coords is", coord)
         return coord
 
     def GridCoordToConfiguration(self, coord):
@@ -68,9 +65,6 @@ class DiscreteEnvironment(object):
         config = [0] * self.dimension
         for idx in range(self.dimension):
           config[idx] = float(self.lower_limits[idx] + coord[idx] * self.resolution + self.resolution/2.0)
-    
-        # print ("coordinates are--->",coord)
-        # print("configuration---->", config)        
         return config
 
     def GridCoordToNodeId(self,coord):
@@ -83,7 +77,6 @@ class DiscreteEnvironment(object):
         for idx in range(self.dimension):
             node_id += multip * coord[idx]
             multip *= self.num_cells[idx]
-
         return node_id
 
 
@@ -99,19 +92,8 @@ class DiscreteEnvironment(object):
             multipliers[idx] = multip
             multip *= self.num_cells[idx]
 
-
         coord = [0] * self.dimension
         for multip_idx in reversed(range(self.dimension)):
             coord[multip_idx] = int(node_id / multipliers[multip_idx])
             node_id %= multipliers[multip_idx]
-
         return coord
-        
-        
-# def main():
-#         print("in main")
-#         o = DiscreteEnvironment(0.5,[0,0],[4,4])     
-#         o.ConfigurationToGridCoord([1.2,3.6])
-#         o.GridCoordToConfiguration([1,3])
-# if __name__ == '__main__':  
-#         main()  
