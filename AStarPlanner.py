@@ -62,12 +62,14 @@ class AStarPlanner(object):
                 successor_current_id = successors.pop()
                 successor_current_cost = dict_cost_to_come[node_current_id] + self.edge_cost(successor_current_id,node_current_id)
 
-                if successor_current_id in open_list and successor_current_cost > dict_cost_to_come[successor_current_id]:
-                    continue
-                back_pointer[successor_current_id] = node_current_id
-                dict_cost_to_come[successor_current_id] = successor_current_cost
-                open_list[successor_current_id] = successor_current_cost + self.cost_to_go(successor_current_id)
-                self.planning_env.PlotEdge(self.planning_env.discrete_env.NodeIdToConfiguration(node_current_id), self.planning_env.discrete_env.NodeIdToConfiguration(successor_current_id))
+                if successor_current_id not in closed_list:
+
+                    if successor_current_id in open_list and successor_current_cost > dict_cost_to_come[successor_current_id]:
+                        continue
+                    back_pointer[successor_current_id] = node_current_id
+                    dict_cost_to_come[successor_current_id] = successor_current_cost
+                    open_list[successor_current_id] = successor_current_cost + self.cost_to_go(successor_current_id)
+                    self.planning_env.PlotEdge(self.planning_env.discrete_env.NodeIdToConfiguration(node_current_id), self.planning_env.discrete_env.NodeIdToConfiguration(successor_current_id))
 
             closed_list[node_current_id] = current_total_cost
         
