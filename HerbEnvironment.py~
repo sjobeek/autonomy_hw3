@@ -79,19 +79,18 @@ class HerbEnvironment(object):
       
 
     def ComputeHeuristicCost(self, start_id, goal_id):
-        cost = 0
+        
         start_config = self.discrete_env.NodeIdToConfiguration(start_id)
         goal_config = self.discrete_env.NodeIdToConfiguration(goal_id)
         length = len(start_config)
-        distance = [0]*length
+        dist = [0]*length
         weights = [1,2,1,2,1,2,1]
         for i in range(len(goal_id)):
-            distance[i] = goal_config[i] - start_config[i]
-        for j in range(len(distance)):
-            cost = cost + (disance[j]*weights[i])     
+            dist[i] = goal_config[i] - start_config[i]
+        for i in range(len())     
        
 	cost = sum([dist[i]*wts[i] for i in range(len(dist))])
-
+        #################################     
         # TODO: Here you will implement a function that 
         # computes the heuristic cost between the configurations
         # given by the two node ids
