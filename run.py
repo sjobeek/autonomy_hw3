@@ -11,6 +11,8 @@ from AStarPlanner import AStarPlanner
 from DepthFirstPlanner import DepthFirstPlanner
 from BreadthFirstPlanner import BreadthFirstPlanner
 from HeuristicRRTPlanner import HeuristicRRTPlanner
+import time
+import math
 
 def main(robot, planning_env, planner):
 
@@ -22,9 +24,24 @@ def main(robot, planning_env, planner):
     else:
         goal_config = numpy.array([3.0, 0.0])
 
+    start_time = time.time()
     plan = planner.Plan(start_config, goal_config)
-    traj = robot.ConvertPlanToTrajectory(plan)
+    print "Plan time (s): ", time.time() - start_time
 
+    print "Plan # nodes (s): ", len(plan)
+
+    full_plan = [start_config] + plan + [goal_config]
+    plan_pathlength = 0
+    for idx in range(len(full_plan)-1):
+        start_x, start_y = full_plan[idx]
+        end_x, end_y = full_plan[idx + 1]
+        dist_x = math.pow( start_x - end_x , 2 )
+        dist_y = math.pow( start_y - end_y , 2 )
+        dist = math.sqrt( dist_x + dist_y )
+        plan_pathlength += dist
+    print "Plan path length : ", plan_pathlength        
+
+    traj = robot.ConvertPlanToTrajectory(plan)
     raw_input('Press any key to execute trajectory')
     robot.ExecuteTrajectory(traj)
 
